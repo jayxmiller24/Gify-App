@@ -3,33 +3,35 @@ $(document).ready(function () {
     var animalArray = ["Hedgehog", "Dog", "cat", "bird"];
     var APIKey = "UcMkPFPr0ngVZvM6XF0YavXoZqDTKnEu"
    
-    function displayMovieInfo() {
+    function displayAnimalInfo() {
 
         var animal = $(this).attr("data-name");
         var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + animal + "&apikey=" + APIKey + "&limit=10";
 
-
+        //Gets ajax content
         $.ajax({
             url: queryURL,
             method: "GET"
-        }).done(function (response) {
+        }).then(function (response) {
+            //sets results to response.data
             var results = response.data;
-            console.log(results);
+            //console.log(results);
+            //runs through array to append 10 photos to html
             for (var i = 0; i < results.length; i++) {
 
-                var animalDiv = $("<div class='col-md-4'>");
+                var animalDiv = $("<div>");
 
                 var rating = results[i].rating;
-                var defaultAnimatedSrc = results[i].images.fixed_height.url;
-                var staticSrc = results[i].images.fixed_height_still.url;
+                var animatedSrc = results[i].images.fixed_height.url;
+                var static = results[i].images.fixed_height_still.url;
                 var showImage = $("<img>");
-                var p = $("<p class='butn'>").text("Rating: " + rating);
+                var p = $("<p>").text("Rating: " + rating);
 
-                showImage.attr("src", staticSrc);
+                showImage.attr("src", static);
                 showImage.addClass("animalGiphy");
                 showImage.attr("data-state", "still");
-                showImage.attr("data-still", staticSrc);
-                showImage.attr("data-animate", defaultAnimatedSrc);
+                showImage.attr("data-still", static);
+                showImage.attr("data-animate", animatedSrc);
                 animalDiv.append(p);
                 animalDiv.append(showImage);
                 $("#buttons-view").prepend(animalDiv);
@@ -41,8 +43,7 @@ $(document).ready(function () {
 
 
     $(document).on("click", ".animalGiphy", pausePlayGifs);
-
-    //Function accesses "data-state" attribute and depending on status, changes image source to "data-animate" or "data-still"
+    //function to pause or play gifs on click
     function pausePlayGifs() {
         var state = $(this).attr("data-state");
         if (state === "still") {
@@ -82,7 +83,7 @@ $(document).ready(function () {
         // This line grabs the input from the textbox
         var animals = $("#animal-input").val().trim();
 
-        
+        //pushes new content to array
         animalArray.push(animals);
 
         
@@ -90,7 +91,7 @@ $(document).ready(function () {
     });
 
 
-    $(document).on("click", ".animal-btn", displayMovieInfo);
+ $(document).on("click", ".animal-btn", displayAnimalInfo);
 
     // Calling the renderButtons function to display the intial buttons
     renderButtons();
